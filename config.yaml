@@ -1,0 +1,103 @@
+debug: &debug Yes
+https: No
+static_url: &static_url "/"
+port: 9000
+port2: 8000
+
+paths:
+    root: &root '../' 
+    client: &client !join [*root, client/]
+    build: &build !join [*root, build/]
+    static: *build
+    vendor: &vendor !join [*root, gulp/vendor/]
+    index: !join [*build, example/index.html]
+
+
+lint:
+    - !join [*client, "**/*.js"]
+apps:
+    example:
+        less:
+            watch:
+                - !join [*client, example/**/*.less]
+                - !join [*client, base.less]
+            template: !join [*client, base.less]
+            vars:
+                static_url: *static_url
+                icon-font-path: !join [*static_url, fonts/]
+            globs:
+                - !join [*client, "example/**/*.less"]
+            includes:
+                - bootstrap.less
+            paths:
+                - !join [*vendor, bootstrap/less]
+            dest: !join [*build, example/styles.css]
+
+        html:
+            scripts: &scripts !flatten
+                - !prepend
+                    - !join [*vendor, "@()"]
+                    - angular/angular.js
+                    - lodash/dist/lodash.js
+                    - angular-ui-router/release/angular-ui-router.js
+                    - angular-bootstrap/ui-bootstrap-tpls.js
+                - !join [*client, "@()ng-lodash/ng-lodash.js"]
+                - !join [*client, "@()example/**/*.js"]
+                - !join ["!", *client, "**/*.spec.js"]
+            watch: !flatten
+                - !join [*client, base.html]
+                - !join [*client, example/index.html]
+                - *scripts
+            template: !join [*client, example/index.html]
+            static_url: *static_url
+            includes:
+                - example/example.tpl.js
+                - example/styles.css
+            dest: !join [*build, example/index.html]
+
+        tpl:
+            src:
+                - !join [*client, example/**/*.tpl.html]
+            dest: !join [*build, example/example.tpl.js]
+
+        copy:
+            src:
+                - !join [*vendor, bootstrap/fonts/*.*]
+            dest:
+                - !join [*build, fonts/]
+
+    test:
+        html:
+            scripts: &scripts2 !flatten
+                - !prepend
+                    - !join [*vendor, "@()"]
+                    - angular/angular.js
+                    - lodash/dist/lodash.js
+                - !join [*client, "@()ng-lodash/ng-lodash.js"]
+                - !join [*client, "@()test/**/*.js"]
+                - !join ["!", *client, "**/*.spec.js"]
+            watch: !flatten
+                - !join [*client, test/index.html]
+                - !join [*client, base.html]
+                - *scripts2
+            template: !join [*client, test/index.html]
+            static_url: "/"
+            includes:
+                - test/styles.css
+                - example/example.tpl.js
+            dest: !join [*build, test/index.html]
+        less:
+            watch:
+                - !join [*client, example/**/*.less]
+                - !join [*client, base.less]
+            template: !join [*client, base.less]
+            vars:
+                static_url: *static_url
+                icon-font-path: !join [*static_url, fonts/]
+            globs:
+                - !join [*client, "example/**/*.less"]
+            includes:
+                - bootstrap.less
+            paths:
+                - !join [*vendor, bootstrap/less]
+            dest: !join [*build, test/styles.css]

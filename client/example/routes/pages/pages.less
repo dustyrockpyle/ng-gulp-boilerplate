@@ -1,0 +1,33 @@
+// page variables
+@left-margin: 10px;
+@top-margin: 20px;
+@right-margin: 10px;
+@bottom-margin: 20px;
+
+// app layout variables
+@body-margin: 10px;
+@ribbon-height: 40px;
+
+#ribbon{
+  position: fixed;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  top: @top-margin;
+  left: @left-margin;
+  right: @right-margin;
+  height: @ribbon-height;
+  background: rgba(255, 0, 0, .2);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+
+#body{
+  position: fixed;
+  top: @top-margin + @ribbon-height + @body-margin;
+  left: @left-margin;
+  right: @right-margin;
+  bottom: @bottom-margin;
+  overflow-y: auto;
+  background: rgba(0, 0, 255, .2);
+}
