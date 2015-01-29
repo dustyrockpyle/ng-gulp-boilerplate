@@ -74,7 +74,7 @@ apps:
                     - angular/angular.js
                     - lodash/dist/lodash.js
                 - !join [*client, "@()ng-lodash/ng-lodash.js"]
-                - !join [*client, "@()test/**/*.js"]
+                - !join [*client, "**/*.js"]
                 - !join ["!", *client, "**/*.spec.js"]
             watch: !flatten
                 - !join [*client, test/index.html]
