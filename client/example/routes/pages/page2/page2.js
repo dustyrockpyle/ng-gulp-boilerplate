@@ -1,4 +1,4 @@
-angular.module('page2', ['ui.router'])
+angular.module('page2', ['ui.router', 'example.color-change'])
   .config(function($stateProvider){
     $stateProvider
       .state('page2', {
@@ -8,7 +8,6 @@ angular.module('page2', ['ui.router'])
           body: {
             templateUrl: 'page2.tpl.html',
             controller: function($scope, $state){
-
             }
           }
         }
