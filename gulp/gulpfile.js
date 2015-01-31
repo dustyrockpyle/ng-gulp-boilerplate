@@ -6,7 +6,6 @@ var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
 var gutil = require('gulp-util');
 var prettify = require('gulp-prettify');
-var concat = require('gulp-concat');
 var jshint = require('gulp-jshint');
 var watch = require('gulp-watch');
 var plumber = require('gulp-plumber');
