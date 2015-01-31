@@ -1,7 +1,6 @@
 var path = require('path');
 var fs = require('fs');
 var gulp = require('gulp');
-var karma = require('karma').server;
 var less = require('gulp-less');
 var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
@@ -24,6 +23,7 @@ var connect = require('gulp-connect');
 var argv = require('yargs').argv;
 var through = require('through2');
 var batch = require('gulp-batch');
+var spawn = require('child_process').spawn;
 
 
 var fix_slashes = function(filepath){
@@ -45,7 +45,7 @@ var glop = function (pattern, cb) {
     });
 };
 
-var config, root, client, vendor, build, whichConfig, karmaConfig;
+var config, root, client, vendor, build, whichConfig, karmaConfig, karma;
 if(argv.config) {
   whichConfig = formatPath(argv.config);
 }
@@ -144,6 +144,7 @@ gulp.task('watch', function () {
       watches.forEach(function (watch) {
         watch.close();
       });
+      if(karma) karma.kill('SIGTERM');
       watches = [];
       try {
         makeConfig();
@@ -208,7 +209,10 @@ gulp.task('watch', function () {
 
         if (appConfig.karma !== undefined){
           _.extend(appConfig.karma, karmaConfig);
-          karma.start(appConfig.karma);
+          karma = spawn('node',
+            [path.join(__dirname, 'karmaBackground.js'), JSON.stringify(appConfig.karma)],
+            {stdio: 'inherit'}
+          );
         }
       });
     }));
