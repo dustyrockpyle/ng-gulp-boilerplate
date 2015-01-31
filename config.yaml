@@ -15,6 +15,14 @@ paths:
 lint:
     - !join [*client, "**/*.js"]
 
+karma:
+    browsers:
+        - Chrome
+    frameworks:
+        - jasmine
+    reporters:
+        - dots
+
 apps:
     example:
         less:
@@ -54,7 +62,12 @@ apps:
                 - example/example.tpl.js
                 - example/styles.css
             dest: !join [*build, example/index.html]
-
+        karma:
+            files:
+                - !join [*build, angular/angular.js]
+                - !join [*build, "**/*.js"]
+                - !join [*vendor, angular-mocks/angular-mocks.js]
+                - !join [*client, "example/**/*.spec.js"]
         tpl:
             src:
                 - !join [*client, example/**/*.tpl.html]

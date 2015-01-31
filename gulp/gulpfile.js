@@ -1,7 +1,7 @@
 var path = require('path');
 var fs = require('fs');
 var gulp = require('gulp');
-var karma = require('gulp-karma');
+var karma = require('karma').server;
 var less = require('gulp-less');
 var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
@@ -45,7 +45,7 @@ var glop = function (pattern, cb) {
     });
 };
 
-var config, root, htmlSrc, jsSrc, tplSrc, lessSrc, allSrc, client, vendor, build, whichConfig;
+var config, root, client, vendor, build, whichConfig, karmaConfig;
 if(argv.config) {
   whichConfig = formatPath(argv.config);
 }
@@ -67,11 +67,7 @@ var makeConfig = function(){
   build = config.paths.build;
   var env = nunjucks.configure(client);
   env.addFilter('glop', glop, true);
-  tplSrc = path.join(client, "**/*.tpl.html");
-  htmlSrc = [path.join(client, "**/*.html"), "!" + tplSrc];
-  jsSrc = path.join(client, "**/*.js");
-  lessSrc = path.join(client, "**/*.less");
-  allSrc = path.join(client, "**/*");
+  karmaConfig = config.karma || {};
 };
 
 var nunjucksContext = {
@@ -208,6 +204,11 @@ gulp.task('watch', function () {
                 .pipe(gulp.dest(obj[1]))
                 .pipe(reload());
             });
+        }
+
+        if (appConfig.karma !== undefined){
+          _.extend(appConfig.karma, karmaConfig);
+          karma.start(appConfig.karma);
         }
       });
     }));
