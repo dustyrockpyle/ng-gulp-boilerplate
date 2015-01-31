@@ -12,9 +12,9 @@ paths:
     vendor: &vendor !join [*root, gulp/vendor/]
     index: !join [*build, example/index.html]
 
-
 lint:
     - !join [*client, "**/*.js"]
+
 apps:
     example:
         less:
