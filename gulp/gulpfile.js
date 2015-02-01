@@ -44,7 +44,7 @@ var glop = function (pattern, cb) {
     });
 };
 
-var config, root, client, vendor, build, whichConfig, karmaConfig, karma;
+var config, root, client, vendor, build, whichConfig, karmaConfig, karmaServers;
 if(argv.config) {
   whichConfig = formatPath(argv.config);
 }
@@ -58,7 +58,6 @@ var schema = createSchema(root);
 
 
 var makeConfig = function(){
-  console.log('CONFIG MADE AGAIN');
   var configFile = fs.readFileSync(whichConfig, encoding = 'utf-8');
   config = yaml.load(configFile, { schema: schema});
   client = config.paths.client;
@@ -136,6 +135,7 @@ gulp.task('watch', function () {
     watches.push(gulp.src(arg1).pipe(watch(arg1, batch(arg2))));
     return watches[watches.length -1];
   };
+  karmaServers = [];
 
   gulp.src(whichConfig)
     .pipe(watch(whichConfig, function (file) {
@@ -143,9 +143,13 @@ gulp.task('watch', function () {
       watches.forEach(function (watch) {
         watch.close();
       });
-      if(karma) karma.kill('SIGTERM');
+      _.forEach(karmaServers, function(server){
+        server.kill('SIGTERM');
+      });
+
       watches = [];
       try {
+        console.log('Making config, reloading watches.');
         makeConfig();
       } catch (err) {
         console.log("Error while generating gulp configuration.");
@@ -208,10 +212,10 @@ gulp.task('watch', function () {
 
         if (appConfig.karma !== undefined){
           _.extend(appConfig.karma, karmaConfig);
-          karma = spawn('node',
+          karmaServers.push(spawn('node',
             [path.join(__dirname, 'karmaBackground.js'), JSON.stringify(appConfig.karma)],
             {stdio: 'inherit'}
-          );
+          ));
         }
       });
     }));
