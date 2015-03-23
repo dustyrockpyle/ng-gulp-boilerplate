@@ -2,7 +2,7 @@ debug: &debug Yes
 static_url: &static_url "http://localhost:9000/"
 
 paths:
-    root: &root '../' 
+    root: &root '../'
     client: &client !join [*root, client/]
     build: &build !join [*root, build/]
     vendor: &vendor !join [*root, gulp/vendor/]
@@ -38,23 +38,23 @@ lint:
     watch: *all_js
 
 html:
-    src: !join [*client, test/index.html]
-    dest: !join [*build, test/index.html]
+    src: !join [*client, example/index.html]
+    dest: !join [*build, example/index.html]
     static_url: *static_url
-    main: test
+    main: example
     includes: !flatten
         - *vendor_scripts
         - *scripts
         - *css_dest
     watch: !flatten
         - *scripts
-        - !join [*client, test/index.html]
+        - !join [*client, example/index.html]
 
 less:
     src: !join [*client, base.less]
     dest: *css_dest
     includes:
-        - !join [*vendor, bootstrap/less/bootstrap.less]
+        - !join [*vendor, bottstrap/less/bootstrap.less]
         - !join [*client, "!(base.less)**/*.less"]
     vars:
         static_url: *static_url
